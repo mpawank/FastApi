@@ -1,22 +1,43 @@
-from fastapi import FastAPI
+from unittest.util import _MAX_LENGTH
+from fastapi import FastAPI, Path, Query
+from enum import Enum
 from typing import Union
+
+
+# Enum for choice names
+class Choice_Names(str, Enum):
+    one = "one"
+    two = "two"
+    three = "three"
+
 
 app = FastAPI()
 
+
+# Basic hello route
 @app.get("/hello")
 async def root():
-    return {"Hello": "World"}
+    return {"message": "Hello from vipan side.."}
 
-@app.get("/items/{item_id}")
-async def path_func(item_id: int):
-    return {"path_variable": item_id}
 
-# GET with optional query parameters
-@app.get("/query/")
-async def query_func(name: Union[str, None] = None, roll_no: Union[int, "100"] = "100"):
-    return {"name": name, "roll_no": roll_no}
+# Another route
+@app.get("/hy")
+async def vipan():
+    return {"message": "hy, how are you!!!"}
 
-# PUT with required query parameters
-@app.put("/query/")
-async def update_query(name: str, roll_no: int):
-    return {"name": name, "roll_no": roll_no}
+
+# Path parameter with Enum
+@app.get("/item/{Item}")
+def path_func(Item: Choice_Names):
+    var_name = {"path variable": Item}
+    return var_name
+
+
+# Query parameters with optional roll_no
+@app.get("/query")
+def query_func(
+    name: str,
+    roll_no: Union[int, None] = Query(default=None)
+):
+    var_name = {"name": name, "roll no": roll_no}
+    return var_name
